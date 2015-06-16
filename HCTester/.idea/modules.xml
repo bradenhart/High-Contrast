@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/Desktop/Gits/High-Contrast/HCTester/HCTester.iml" filepath="$USER_HOME$/Desktop/Gits/High-Contrast/HCTester/HCTester.iml" />
-      <module fileurl="file://$USER_HOME$/Desktop/Gits/High-Contrast/HCTester/app/app.iml" filepath="$USER_HOME$/Desktop/Gits/High-Contrast/HCTester/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HCTester.iml" filepath="$PROJECT_DIR$/HCTester.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>

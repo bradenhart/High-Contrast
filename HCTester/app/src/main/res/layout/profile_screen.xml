@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profile_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -68,11 +69,12 @@
         android:background="#11dafa" />
 
     <RelativeLayout
+        android:id="@+id/progress_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:isScrollContainer="true"
         android:paddingLeft="15dp"
-        android:paddingRight="10dp"
+        android:paddingRight="15dp"
         android:paddingTop="8dp"
         android:paddingBottom="0dp">
 
@@ -88,88 +90,109 @@
             android:layout_marginBottom="5dp"
             android:layout_centerHorizontal="true"/>
 
-        <ProgressBar
-            android:id="@+id/progressbar1"
+        <LinearLayout
+            android:id="@+id/progressbar1_border"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_below="@id/progress_header"
             android:layout_centerHorizontal="true"
-            android:background="#cccccc"/>
+            android:background="@drawable/progressbar_border">
+            <View
+                android:id="@+id/progressbar1"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:background="#cccccc"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/progressbar1_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Label1"
+            android:text="Label 1"
             android:textSize="20sp"
             android:textColor="#000000"
-            android:layout_alignLeft="@id/progressbar1"
+            android:layout_alignParentLeft="true"
             android:padding="2dp"
-            android:layout_below="@id/progressbar1"
+            android:layout_below="@id/progressbar1_border"
             android:layout_marginBottom="10dp"/>
         <TextView
+            android:id="@+id/p1_values"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3/8"
             android:textSize="20sp"
             android:textColor="#000000"
             android:padding="2dp"
-            android:layout_alignRight="@id/progressbar1"
-            android:layout_below="@id/progressbar1"/>
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/progressbar1_border"/>
 
-        <ProgressBar
-            android:id="@+id/progressbar2"
+        <LinearLayout
+            android:id="@+id/progressbar2_border"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_below="@id/progressbar1_label"
             android:layout_centerHorizontal="true"
-            android:background="#cccccc"/>
+            android:background="@drawable/progressbar_border">
+            <View
+                android:id="@+id/progressbar2"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:background="#cccccc"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/progressbar2_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Label2"
+            android:text="Label 2"
             android:textSize="20sp"
             android:textColor="#000000"
             android:padding="2dp"
-            android:layout_alignLeft="@id/progressbar2"
-            android:layout_below="@id/progressbar2"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/progressbar2_border"
             android:layout_marginBottom="10dp"/>
         <TextView
+            android:id="@+id/p2_values"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2/10"
             android:textSize="20sp"
             android:textColor="#000000"
             android:padding="2dp"
-            android:layout_alignRight="@id/progressbar2"
-            android:layout_below="@id/progressbar2"/>
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/progressbar2_border"/>
 
-        <ProgressBar
-            android:id="@+id/progressbar3"
+        <LinearLayout
+            android:id="@+id/progressbar3_border"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_below="@id/progressbar2_label"
             android:layout_centerHorizontal="true"
-            android:background="#cccccc"/>
+            android:background="@drawable/progressbar_border">
+            <View
+                android:id="@+id/progressbar3"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:background="#cccccc"/>
+        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Label3"
+            android:text="Label 3"
             android:textSize="20sp"
             android:textColor="#000000"
             android:padding="2dp"
-            android:layout_alignLeft="@id/progressbar3"
-            android:layout_below="@id/progressbar3"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/progressbar3_border"
             android:layout_marginBottom="10dp"/>
         <TextView
+            android:id="@+id/p3_values"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0/7"
             android:textSize="20sp"
             android:textColor="#000000"
             android:padding="2dp"
-            android:layout_alignRight="@id/progressbar3"
-            android:layout_below="@id/progressbar3"/>
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/progressbar3_border"/>
 
     </RelativeLayout>
 
@@ -193,57 +216,60 @@
             android:layout_marginBottom="5dp"
             android:layout_centerHorizontal="true"/>
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_below="@id/achievements_header"
-            android:gravity="center"
-            android:isScrollContainer="true">
-
-            <View
-                android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/achievements_header">
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="#acef"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <View
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="#dedeff"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#acef"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
 
-            <View
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="#acad"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#dedeff"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
 
-            <View
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="#acef"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#acad"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
 
-            <View
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="#acad"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#acef"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
 
-            <View
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:background="#dedeff"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#acad"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
 
-        </LinearLayout>
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="#dedeff"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
     </RelativeLayout>
 
