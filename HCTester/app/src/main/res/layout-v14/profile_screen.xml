@@ -31,7 +31,11 @@
             android:text="John Doe"
             android:textColor="@android:color/white"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:shadowColor="#000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -43,22 +47,43 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="10dp"
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="Level 3"
                 android:textColor="@android:color/white"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="."
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:gravity="center_vertical"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="10dp"
                 android:gravity="center"
                 android:padding="2dp"
                 android:text="Dunedin"
                 android:textColor="@android:color/white"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1"/>
 
         </LinearLayout>
 
