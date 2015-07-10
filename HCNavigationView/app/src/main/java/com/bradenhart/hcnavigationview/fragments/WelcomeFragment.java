@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
     private Context context;
     private EditText nameInput;
-    private Button skipBtn, nextBtn;
+    private Button cameraBtn, galleryBtn, skipBtn, nextBtn;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor spEdit;
     private String userName;
@@ -40,6 +41,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         spEdit = sharedPreferences.edit();
 
         nameInput = (EditText) view.findViewById(R.id.input_name);
+        nameInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        nameInput.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_USER_NAME)) {
@@ -59,6 +62,12 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        cameraBtn = (Button) view.findViewById(R.id.welcome_select_camera);
+        galleryBtn = (Button) view.findViewById(R.id.welcome_select_gallery);
+
+        cameraBtn.setOnClickListener(this);
+        galleryBtn.setOnClickListener(this);
+
         skipBtn = (Button) view.findViewById(R.id.welcome_skip);
         nextBtn = (Button) view.findViewById(R.id.welcome_next);
 
@@ -76,6 +85,12 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         Fragment fragment = null;
 
         switch (id) {
+            case R.id.welcome_select_camera:
+
+                break;
+            case R.id.welcome_select_gallery:
+
+                break;
             case R.id.welcome_skip:
                 spEdit.putString(KEY_USER_NAME, defaultName).apply();
                 fragment = new SocialFragment();
@@ -90,6 +105,10 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+    }
+
+    private void openGallery() {
+        
     }
 
     @Override

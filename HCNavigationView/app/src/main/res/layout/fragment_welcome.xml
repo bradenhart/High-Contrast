@@ -40,7 +40,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Name" />
+            android:hint="Name"
+            android:imeOptions="actionDone"
+            android:inputType="textPersonName"
+            android:maxLines="1"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout

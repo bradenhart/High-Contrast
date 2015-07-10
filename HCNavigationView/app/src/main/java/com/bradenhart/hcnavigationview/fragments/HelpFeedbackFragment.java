@@ -54,15 +54,6 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         spEdit = sharedPreferences.edit();
 
-
-        dp = (CircleImageView) view.findViewById(R.id.test_dp);
-        button = (ImageView) view.findViewById(R.id.test_gallery_button);
-        button.setOnClickListener(this);
-
-        imagePath = (TextView) view.findViewById(R.id.test_dp_path);
-        dp2 = (CircleImageView) view.findViewById(R.id.second_image);
-        dp2.setOnClickListener(this);
-
         return view;
     }
 
