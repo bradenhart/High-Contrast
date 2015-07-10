@@ -189,12 +189,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         });
 
         profilePic = (CircleImageView) headerView.findViewById(R.id.header_profile_pic);
-        if (!sharedPreferences.contains(KEY_PROFILE_PIC)) {
-            profilePic.setImageResource(defaultPic);
-        } else {
-            // get image from db and set the image view src
-            showSavedProfilePicture();
-        }
+        showSavedProfilePicture();
 
         userNameTv = (TextView) headerView.findViewById(R.id.header_username_textview);
         userName = sharedPreferences.getString(KEY_USER_NAME, defaultName);
@@ -347,12 +342,16 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     private void showSavedProfilePicture() {
         byte[] array = dbHandler.retrieveByteArrayFromDb();
-        Bitmap bitmap = convertByteArrayToBitmap(array);
-        if (bitmap == null) {
+        if (array == null) {
             profilePic.setImageResource(defaultPic);
         } else {
-            profilePic.setImageBitmap(bitmap);
-            bitmap.recycle();
+            Bitmap bitmap = convertByteArrayToBitmap(array);
+            if (bitmap == null) {
+                profilePic.setImageResource(defaultPic);
+            } else {
+                profilePic.setImageBitmap(bitmap);
+                bitmap.recycle();
+            }
         }
     }
 
