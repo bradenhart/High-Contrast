@@ -31,4 +31,8 @@ public final class Constants {
     public static final String screenHelpFeedback = "helpFeedback";
 
 
+    public static int convertDptoPx(int dp) {
+        return 1;
+    }
+
 }

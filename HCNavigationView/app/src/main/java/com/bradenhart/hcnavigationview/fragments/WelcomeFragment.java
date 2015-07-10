@@ -1,9 +1,15 @@
 package com.bradenhart.hcnavigationview.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +22,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bradenhart.hcnavigationview.R;
+import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static com.bradenhart.hcnavigationview.Constants.*;
 
 /**
@@ -29,6 +42,11 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor spEdit;
     private String userName;
+    private final int GALLERY = 1;
+    private CircleImageView picImageView;
+    private Bitmap Image = null, rotateImage = null;
+    private Uri mImageUri;
+    private DatabaseHandler dbHandler;
 
     public WelcomeFragment() {}
 
@@ -39,6 +57,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
         context = getActivity();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         spEdit = sharedPreferences.edit();
+
+        dbHandler = DatabaseHandler.getInstance(context);
 
         nameInput = (EditText) view.findViewById(R.id.input_name);
         nameInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -61,6 +81,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+
+        picImageView = (CircleImageView) view.findViewById(R.id.welcome_profile_pic);
 
         cameraBtn = (Button) view.findViewById(R.id.welcome_select_camera);
         galleryBtn = (Button) view.findViewById(R.id.welcome_select_gallery);
@@ -89,7 +111,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.welcome_select_gallery:
-
+                openGallery();
                 break;
             case R.id.welcome_skip:
                 spEdit.putString(KEY_USER_NAME, defaultName).apply();
@@ -108,14 +130,74 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void openGallery() {
-        
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY && resultCode != 0) {
+            mImageUri = data.getData();
+            try {
+                Image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
+                if (getOrientation(getActivity(), mImageUri) != 0) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(getOrientation(getActivity(), mImageUri));
+                    if (rotateImage != null)
+                        rotateImage.recycle();
+                    rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix, true);
+                    picImageView.setImageBitmap(rotateImage);
+                    Image = null;
+                } else {
+                    picImageView.setImageBitmap(Image);
+                    rotateImage = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+        cursor.moveToFirst();
+        int result = cursor.getInt(0);
+        cursor.close();
+        return result;
+    }
+
+    private Bitmap resizeBitmap(Bitmap image) {
+        return null;
+    }
+
+    private byte[] convertBitmapToByteArray(Bitmap image) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    private void saveByteArrayToDb(byte[] array) {
+        dbHandler.saveByteArrayToDb(array);
+    }
+
+    private Bitmap getValidBitmap() {
+        if (Image == null && rotateImage != null) return rotateImage;
+        if (Image != null && rotateImage == null) return Image;
+        return null;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save whatever the user has typed in the name field.
-        // save their photo.
         // will reload them on orientation change.
         spEdit.putString(KEY_USER_NAME, nameInput.getText().toString()).apply();
     }
