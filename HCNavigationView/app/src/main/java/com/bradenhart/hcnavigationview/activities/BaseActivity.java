@@ -348,8 +348,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private void showSavedProfilePicture() {
         byte[] array = dbHandler.retrieveByteArrayFromDb();
         Bitmap bitmap = convertByteArrayToBitmap(array);
-        if (bitmap == null) profilePic.setImageResource(defaultPic);
-        else profilePic.setImageBitmap(bitmap);
+        if (bitmap == null) {
+            profilePic.setImageResource(defaultPic);
+        } else {
+            profilePic.setImageBitmap(bitmap);
+            bitmap.recycle();
+        }
     }
 
     private Bitmap convertByteArrayToBitmap(byte[] array) {

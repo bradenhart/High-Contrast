@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,17 +14,19 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bradenhart.hcnavigationview.R;
+import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static com.bradenhart.hcnavigationview.Constants.*;
@@ -55,6 +58,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private static Bitmap Image = null;
     private static Bitmap rotateImage = null;
     private Uri mImageUri;
+    private DatabaseHandler dbHandler;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -62,10 +66,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (!sharedPreferences.contains(KEY_PROFILE_PIC)) {
             profilePic.setImageResource(defaultPic);
         } else {
-            String path = sharedPreferences.getString(KEY_PROFILE_PIC, null);
-            profilePic.setImageURI(Uri.parse(path));
+            showSavedProfilePicture();
         }
-
     }
 
     @Override
@@ -75,6 +77,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         spEdit = sharedPreferences.edit();
+
+        dbHandler = DatabaseHandler.getInstance(context);
 
         profilePic = (CircleImageView) view.findViewById(R.id.profile_profile_pic);
 
@@ -141,13 +145,32 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void showSavedProfilePicture() {
+        byte[] array = dbHandler.retrieveByteArrayFromDb();
+        Bitmap bitmap = convertByteArrayToBitmap(array);
+        if (bitmap == null) {
+            profilePic.setImageResource(defaultPic);
+        } else {
+            profilePic.setImageBitmap(bitmap);
+            bitmap.recycle();
+        }
+    }
+
+    private Bitmap convertByteArrayToBitmap(byte[] array) {
+        return BitmapFactory.decodeByteArray(array, 0, array.length);
+    }
+
     private void openGallery() {
-        if (Image != null)
-            Image.recycle();
+        recycleBitmaps();
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+    }
+
+    private void recycleBitmaps() {
+        if (Image != null) Image.recycle();
+        if (rotateImage != null) rotateImage.recycle();
     }
 
     @Override
@@ -163,11 +186,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     if (rotateImage != null)
                         rotateImage.recycle();
                     rotateImage = Bitmap.createBitmap(Image, 0, 0, Image.getWidth(), Image.getHeight(), matrix, true);
-                    saveImage(rotateImage, mImageUri);
-                    //dp.setImageBitmap(rotateImage);
-                } else
-                    saveImage(Image, mImageUri);
-                //dp.setImageBitmap(Image);
+                    showImagePreview(rotateImage);
+                    Image = null;
+                } else {
+                    showImagePreview(Image);
+                    rotateImage = null;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -187,17 +211,60 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return result;
     }
 
-    private void saveImage(Bitmap image, Uri imageUri) {
+    private void showImagePreview(Bitmap image) {
         previewLabel.setVisibility(View.VISIBLE);
         previewPic.setVisibility(View.VISIBLE);
         previewPic.setImageBitmap(image);
-        spEdit.putString(KEY_PROFILE_PIC, imageUri.toString()).apply();
+    }
+
+    private Bitmap resizeBitmap(Bitmap image) {
+        Log.e(LOGTAG, "resized bitmap");
+        return null;
+    }
+
+    private byte[] convertBitmapToByteArray(Bitmap image) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        byte[] array = stream.toByteArray();
+        Log.e(LOGTAG, "converted bitmap to byte array");
+        return array;
+    }
+
+    private void saveByteArrayToDb(byte[] array) {
+        dbHandler.saveByteArrayToDb(array);
+        Log.e(LOGTAG, "saved byte array to db");
+    }
+
+    private Bitmap getValidBitmap() {
+        if (Image == null && rotateImage != null) return rotateImage;
+        if (Image != null && rotateImage == null) return Image;
+        return null;
+    }
+
+    private void startProfilePictureThread(final Bitmap bmp) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // resize image (add later)
+                /* ----- */
+                // convert image to byte array
+                byte[] array = convertBitmapToByteArray(bmp);
+                // save byte array in db
+                saveByteArrayToDb(array);
+                Log.e(LOGTAG, "finished profile picture thread");
+            }
+        });
+        thread.start();
     }
 
     private void handleNewProfilePic() {
-        String path = sharedPreferences.getString(KEY_PROFILE_PIC, null);
-        profilePic.setImageURI(Uri.parse(path));
+        if (getValidBitmap() != null) {
+            profilePic.setImageBitmap(getValidBitmap());
+            startProfilePictureThread(getValidBitmap());
+        }
     }
+
+
 
 }
 

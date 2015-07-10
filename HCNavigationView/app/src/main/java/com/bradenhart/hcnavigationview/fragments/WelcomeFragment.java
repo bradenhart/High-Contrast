@@ -140,10 +140,16 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void openGallery() {
+        recycleBitmaps();
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
+    }
+
+    private void recycleBitmaps() {
+        if (Image != null) Image.recycle();
+        if (rotateImage != null) rotateImage.recycle();
     }
 
     @Override

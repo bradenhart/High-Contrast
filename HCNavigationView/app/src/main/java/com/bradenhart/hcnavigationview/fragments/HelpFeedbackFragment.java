@@ -63,25 +63,13 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
         int id = view.getId();
 
         switch (id) {
-            case R.id.test_gallery_button:
-                dp.setImageBitmap(null);
-                if (Image != null)
-                    Image.recycle();
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY);
-                break;
-            case R.id.second_image:
-                setStoredImageAsDp();
-                break;
             default:
                 break;
         }
 
     }
 
-    @Override
+/*    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY && resultCode != 0) {
@@ -105,8 +93,9 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
+/*
     public static int getOrientation(Context context, Uri photoUri) {
         Cursor cursor = context.getContentResolver().query(photoUri,
                 new String[] { MediaStore.Images.ImageColumns.ORIENTATION },null, null, null);
@@ -118,16 +107,9 @@ public class HelpFeedbackFragment extends Fragment implements  View.OnClickListe
         int result = cursor.getInt(0);
         cursor.close();
         return result;
-    }
 
-    private void saveImage(Bitmap image, Uri imageUri) {
-        dp.setImageBitmap(image);
-        spEdit.putString(KEY_PROFILE_PIC, imageUri.toString()).apply();
     }
+*/
 
-    private void setStoredImageAsDp() {
-        String path = sharedPreferences.getString(KEY_PROFILE_PIC, null);
-        dp2.setImageURI(Uri.parse(path));
-    }
 
 }
