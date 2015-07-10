@@ -76,6 +76,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(KEY_ID, KEY_PROFILE_PIC);
         cv.put(KEY_PICTURE, img);
         db.insert(TABLE_PROFILE, null, cv);
+        Log.e(LOGTAG, "saved byte array in db");
     }
 
     public byte[] retrieveByteArrayFromDb() {
@@ -84,6 +85,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PROFILE + " WHERE " + KEY_ID + " =?", new String[] { KEY_PROFILE_PIC });
         if (cursor.moveToFirst()) {
             array = cursor.getBlob(cursor.getColumnIndex(KEY_PICTURE));
+            Log.e(LOGTAG, "retrieved byte array from db");
+        } else {
+            Log.e(LOGTAG, "byte array is null, not found in db");
         }
         return array;
     }

@@ -3,6 +3,8 @@ package com.bradenhart.hcnavigationview.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -24,12 +26,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bradenhart.hcnavigationview.R;
+import com.bradenhart.hcnavigationview.databases.DatabaseHandler;
 import com.bradenhart.hcnavigationview.fragments.*;
 import static com.bradenhart.hcnavigationview.Constants.*;
 
 import com.google.gson.Gson;
 
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,7 +54,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor spEdit;
     private View headerView;
-    private ImageView profilePic;
+    private CircleImageView profilePic;
     private TextView userNameTv;
     private String userName;
     private Menu navMenu;
@@ -60,6 +65,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private Fragment fragment = null;
     private String currentScreen = null;
 
+    private DatabaseHandler dbHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,8 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         spEdit = sharedPreferences.edit();
+
+        dbHandler = DatabaseHandler.getInstance(this);
 
         manager = getSupportFragmentManager();
 
@@ -179,14 +188,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        profilePic = (ImageView) headerView.findViewById(R.id.header_profile_pic);
+        profilePic = (CircleImageView) headerView.findViewById(R.id.header_profile_pic);
         if (!sharedPreferences.contains(KEY_PROFILE_PIC)) {
             profilePic.setImageResource(defaultPic);
         } else {
-            String imagePath = sharedPreferences.getString(KEY_PROFILE_PIC, null);
-            if (imagePath != null) {
-
-            }
+            // get image from db and set the image view src
+            showSavedProfilePicture();
         }
 
         userNameTv = (TextView) headerView.findViewById(R.id.header_username_textview);
@@ -218,10 +225,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         }, delay);
     }
 
-    private boolean userHasSetUp() {
-        return sharedPreferences.getBoolean(KEY_HAS_SET_UP, false);
-    }
-
     private void requestNewChallenge() {
         mMenuItem = mNavDrawer.getMenu().findItem(R.id.new_challenge);
         fragment = new NewChallengeFragment();
@@ -231,10 +234,14 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean newChallengeRequested(Bundle bundle, SharedPreferences sp) {
         if (bundle != null) {
-            return (bundle.getString(KEY_REQUEST_ACTION).equals(showNewChallenge));
-
+            String request = bundle.getString(KEY_REQUEST_ACTION);
+            if (request != null && request.equals(showNewChallenge)) return true;
         }
-        return sp.getBoolean(KEY_HAS_SET_UP, defaultSetUpState);
+        if (sharedPreferences.contains(KEY_SETUP_STAGE)) {
+            String stage = sharedPreferences.getString(KEY_SETUP_STAGE, setUpDefault);
+            if (stage.equals(stageCompleted)) return true;
+        }
+        return false;
     }
 
     private void uncheckAllMenuItems() {
@@ -338,6 +345,16 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void showSavedProfilePicture() {
+        byte[] array = dbHandler.retrieveByteArrayFromDb();
+        Bitmap bitmap = convertByteArrayToBitmap(array);
+        if (bitmap == null) profilePic.setImageResource(defaultPic);
+        else profilePic.setImageBitmap(bitmap);
+    }
+
+    private Bitmap convertByteArrayToBitmap(byte[] array) {
+        return BitmapFactory.decodeByteArray(array, 0, array.length);
+    }
 
     private void updateUsername() {
         String currentName = userNameTv.getText().toString();
