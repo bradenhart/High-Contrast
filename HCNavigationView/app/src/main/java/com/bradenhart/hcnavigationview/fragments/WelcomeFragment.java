@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import static com.bradenhart.hcnavigationview.Constants.*;
  */
 public class WelcomeFragment extends Fragment implements View.OnClickListener {
 
+    private final String LOGTAG = "Welcome Fragment";
     private Context context;
     private EditText nameInput;
     private Button cameraBtn, galleryBtn, skipBtn, nextBtn;
@@ -114,13 +116,21 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
                 openGallery();
                 break;
             case R.id.welcome_skip:
+                if (getValidBitmap() != null) {
+                    startProfilePictureThread(getValidBitmap());
+                }
                 spEdit.putString(KEY_USER_NAME, defaultName).apply();
+                spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
                 fragment = new SocialFragment();
                 fragmentManager.beginTransaction().replace(R.id.welcome_container, fragment).commit();
                 break;
             case R.id.welcome_next:
+                if (getValidBitmap() != null) {
+                    startProfilePictureThread(getValidBitmap());
+                }
                 userName = nameInput.getText().toString();
                 spEdit.putString(KEY_USER_NAME, userName).apply();
+                spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
                 fragment = new SocialFragment();
                 fragmentManager.beginTransaction().replace(R.id.welcome_container, fragment).commit();
                 break;
@@ -175,23 +185,43 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private Bitmap resizeBitmap(Bitmap image) {
+        Log.e(LOGTAG, "resized bitmap");
         return null;
     }
 
     private byte[] convertBitmapToByteArray(Bitmap image) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
+        byte[] array = stream.toByteArray();
+        Log.e(LOGTAG, "converted bitmap to byte array");
+        return array;
     }
 
     private void saveByteArrayToDb(byte[] array) {
         dbHandler.saveByteArrayToDb(array);
+        Log.e(LOGTAG, "saved byte array to db");
     }
 
     private Bitmap getValidBitmap() {
         if (Image == null && rotateImage != null) return rotateImage;
         if (Image != null && rotateImage == null) return Image;
         return null;
+    }
+
+    private void startProfilePictureThread(final Bitmap bmp) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // resize image (add later)
+                /* ----- */
+                // convert image to byte array
+                byte[] array = convertBitmapToByteArray(bmp);
+                // save byte array in db
+                saveByteArrayToDb(array);
+                Log.e(LOGTAG, "finished profile picture thread");
+            }
+        });
+        thread.start();
     }
 
     @Override

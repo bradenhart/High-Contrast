@@ -50,8 +50,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         switch (id) {
             case R.id.settings_done:
-                spEdit.putString(KEY_SETUP_STAGE, stageSettings).apply();
-                spEdit.putBoolean(KEY_HAS_SET_UP, true).apply();
+                spEdit.putString(KEY_SETUP_STAGE, stageCompleted).apply();
                 Intent intent = new Intent(getActivity().getApplicationContext(), BaseActivity.class);
                 startActivity(intent);
                 break;

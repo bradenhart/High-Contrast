@@ -14,10 +14,8 @@ public final class Constants {
     public static final String KEY_SELECTED_ID = "selected_id";
     public static final String KEY_FIRST_LOOK = "first_look";
     public static final String KEY_USER_NAME = "username";
-    public static final String KEY_HAS_SET_UP = "setup_completed";
     public static final String defaultName = "J. Doe";
     public static final String KEY_REQUEST_ACTION = "request_action";
-    public static boolean defaultSetUpState = false;
     public static final String showNewChallenge = "show_new_challenge";
     public static final String KEY_PROFILE_PIC = "profile_pic";
     public static final int defaultPic = R.drawable.ic_person_white_48dp;

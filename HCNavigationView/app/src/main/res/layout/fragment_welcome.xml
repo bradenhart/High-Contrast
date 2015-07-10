@@ -64,7 +64,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pick image"
+            android:text="Pick image from"
             android:textSize="18dp"
             android:textColor="@color/accent"
             android:padding="5dp"
@@ -99,6 +99,17 @@
                android:textColor="@color/accent"
                android:background="@color/background_material_dark"/>
        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="or keep default image."
+            android:textSize="18dp"
+            android:textColor="@color/accent"
+            android:padding="5dp"
+            android:gravity="center_horizontal"
+            android:background="@color/background_material_dark"
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 

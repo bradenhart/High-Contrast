@@ -53,12 +53,12 @@ public class SocialFragment extends Fragment implements View.OnClickListener {
 
         switch (id) {
             case R.id.social_skip:
-                spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
+                spEdit.putString(KEY_SETUP_STAGE, stageSettings).apply();
                 fragment = new SettingsFragment();
                 fragmentManager.beginTransaction().replace(R.id.welcome_container, fragment).commit();
                 break;
             case R.id.social_next:
-                spEdit.putString(KEY_SETUP_STAGE, stageSocial).apply();
+                spEdit.putString(KEY_SETUP_STAGE, stageSettings).apply();
                 fragment = new SettingsFragment();
                 fragmentManager.beginTransaction().replace(R.id.welcome_container, fragment).commit();
                 break;
