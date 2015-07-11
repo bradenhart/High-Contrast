@@ -89,7 +89,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } else {
             Log.e(LOGTAG, "byte array is null, not found in db");
         }
-        cursor.close();
         return array;
     }
 }
